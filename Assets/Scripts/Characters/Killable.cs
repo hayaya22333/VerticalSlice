@@ -64,6 +64,7 @@ public class Killable : Character
         player.GetEXP(expDrop);
 
         physicalCollider.enabled = false;
+        GetComponent<StateMachine>().enabled = false;
         Destroy(this);
     }
 

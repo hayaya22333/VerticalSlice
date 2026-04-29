@@ -40,7 +40,7 @@ public class Character : MonoBehaviour
 
     public void Follow(GameObject target)
     {
-        if (positionLocked)
+        if (positionLocked || target == null)
         {
             return;
         }
