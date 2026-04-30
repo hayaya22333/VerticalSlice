@@ -15,6 +15,7 @@ public class Killable : Character
     PlayerController player;
     private float stunTime = 0.2f;
     private float positionLockTimer;
+    private bool onAttackCD = false;
 
     void Awake()
     {
@@ -68,6 +69,17 @@ public class Killable : Character
         Destroy(this);
     }
 
+    new void Attack()
+    {
+        player.PlayerTakeDamage(atk);
+        onAttackCD = true;
+    }
+    
+    public void EndAttack()
+    {
+        onAttackCD = false;
+    }
+
     void DropItems()
     {
         foreach (GameObject item in itemDrops)
@@ -88,6 +100,11 @@ public class Killable : Character
     public string GetDescription()
     {
         return description;
+    }
+
+    public bool GetAttackStatus()
+    {
+        return onAttackCD;
     }
 
     public GameObject GetTarget()

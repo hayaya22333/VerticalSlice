@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI expProgressionText;
     [SerializeField] GameObject lvlUpTextObject;
     [SerializeField] PlayerController player;
+    [SerializeField] TextMeshProUGUI hpText;
 
     void Start()
     {
@@ -19,6 +20,7 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         expProgressionText.text = player.playerEXP + "/" + player.maxEXP;
+        hpText.text = "HP: " + player.hp;
     }
 
     void HandleLevelUp(int lvl)

@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    PlayerController player;
     [SerializeField] AudioSource pistol;
     [SerializeField] AudioSource levelUp;
     [SerializeField] List<AudioSource> kills;
+    [SerializeField] AudioSource hurt;
+
     void Start()
     {
-        Locator.Instance.Player.Shoot += HandleShoot;
-        Locator.Instance.Player.KilledEnemy += HandleKill;
-        Locator.Instance.Player.LevelUp += HandleLevelUp;
+        player = Locator.Instance.Player;
+        player.Shoot += HandleShoot;
+        player.KilledEnemy += HandleKill;
+        player.LevelUp += HandleLevelUp;
+        player.PlayerTookDamage += HandlePlayerDamage;
     }
 
     void HandleShoot()
@@ -31,6 +36,11 @@ public class AudioManager : MonoBehaviour
     void HandleLevelUp(int level)
     {
         levelUp.Play();
+    }
+
+    void HandlePlayerDamage(int dmg)
+    {
+        hurt.Play();
     }
 
 }

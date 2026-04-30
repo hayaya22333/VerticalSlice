@@ -28,6 +28,7 @@ public class PlayerController : Character
     public event EmptyDelegate Shoot;
     public event IntDelegate KilledEnemy;
     public event IntDelegate LevelUp;
+    public event IntDelegate PlayerTookDamage;
 
     private Camera playerCam;
     private float xRotation = 0f;
@@ -127,6 +128,18 @@ public class PlayerController : Character
     public void HandleLevelUp(int lvl)
     {
         Debug.Log("Player reached lvl " + lvl);
+    }
+
+    public void PlayerTakeDamage(int dmg)
+    {
+        if (hp == 0) return;
+        hp -= dmg;
+        Debug.Log("Player took " + dmg + "damage!!");
+        PlayerTookDamage.Invoke(dmg);
+        if (hp <= 0)
+        {
+            Destroy(this);
+        }
     }
     #endregion
 
