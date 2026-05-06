@@ -21,11 +21,24 @@ public class PlayerController : Character
     public int maxEXP = 300;
     public int playerEXP = 0;
     public int killCount = 0;
+    
+    // Gun
+    public int maxAmmo = 12;
+    public int ammo = 30;
+    public float reloadDuration = 1.3f;
+    private float reloadTimer;
 
+    [Header("Player Status")]
+    public float attackCD;
+    public int loadedAmmo = 5;
+
+    // Events
     public delegate void EmptyDelegate();
     public delegate void IntDelegate(int x);
 
     public event EmptyDelegate Shoot;
+    public event EmptyDelegate KilledPlayer;
+    public event EmptyDelegate PlayerReload;
     public event IntDelegate KilledEnemy;
     public event IntDelegate LevelUp;
     public event IntDelegate PlayerTookDamage;
@@ -36,7 +49,7 @@ public class PlayerController : Character
 
     #endregion
 
-    #region StartUpdate
+    #region Start/Update
 
     void Awake()
     {
@@ -66,16 +79,43 @@ public class PlayerController : Character
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            if (reloadTimer > 0) return;
+            if (attackCD > 0 || loadedAmmo <= 0) return;
+            attackCD = 0.5f;
+            loadedAmmo -= 1;
+
             DrawATKRay();
             Shoot.Invoke();
             Attack();
         }
 
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (reloadTimer > 0 || loadedAmmo >= maxAmmo) return;
+            StartReload();
+            PlayerReload.Invoke();
+        }
+
+        // Status check
         if (playerEXP >= maxEXP)
         {
             playerEXP -= maxEXP;
             lvl += 1;
             LevelUp.Invoke(lvl);
+        }
+
+        if (attackCD > 0)
+        {
+            attackCD -= Time.deltaTime;
+        }
+
+        if (reloadTimer > 0)
+        {
+            reloadTimer -= Time.deltaTime;
+            if (reloadTimer <= 0)
+            {
+                Reload();
+            }
         }
     }
     #endregion
@@ -136,14 +176,56 @@ public class PlayerController : Character
         hp -= dmg;
         Debug.Log("Player took " + dmg + "damage!!");
         PlayerTookDamage.Invoke(dmg);
+
+        // Death
         if (hp <= 0)
         {
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+            KilledPlayer.Invoke();
             Destroy(this);
         }
     }
+
     #endregion
 
     #region Actions
+
+    void StartReload()
+    {
+        reloadTimer = reloadDuration;
+    }
+
+    void Reload()
+    {
+        if (loadedAmmo == maxAmmo || ammo == 0) return;
+        // Play animation, wait for end
+        int emptyAmmo = maxAmmo - loadedAmmo;
+        if (ammo >= emptyAmmo)
+        {
+            ammo -= emptyAmmo;
+            loadedAmmo = maxAmmo;
+        }
+        else
+        {
+            loadedAmmo += ammo;
+            ammo = 0;
+        }
+    }
+
+    void DrawATKRay()
+    {
+        Ray atkRay = new Ray(playerCam.transform.position, playerCam.transform.forward);
+        Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * 20f, Color.red);
+        RaycastHit hit;
+
+        if (Physics.Raycast(atkRay, out hit))
+        {
+            if (hit.collider.TryGetComponent<IInteractable>(out var target))
+            {
+                target.TakeDamage(atk, gameObject.name);
+            }
+        }
+    }
 /*
     void DrawRay()
     {
@@ -171,21 +253,6 @@ public class PlayerController : Character
         }
     }
 */
-
-    void DrawATKRay()
-    {
-        Ray atkRay = new Ray(playerCam.transform.position, playerCam.transform.forward);
-        Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * 20f, Color.red);
-        RaycastHit hit;
-
-        if (Physics.Raycast(atkRay, out hit))
-        {
-            if (hit.collider.TryGetComponent<IInteractable>(out var target))
-            {
-                target.TakeDamage(atk, gameObject.name);
-            }
-        }
-    }
     #endregion
 
 }

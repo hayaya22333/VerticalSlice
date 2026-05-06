@@ -13,9 +13,7 @@ public class Killable : Character
     CharState state = CharState.Idle;
     GameObject target;
     PlayerController player;
-    private float stunTime = 0.2f;
     private float positionLockTimer;
-    private bool onAttackCD = false;
 
     void Awake()
     {
@@ -31,18 +29,6 @@ public class Killable : Character
 
     void Update()
     {
-        if (!positionLocked)
-        {
-            positionLockTimer = stunTime;
-        }
-        else
-        {
-            positionLockTimer -= Time.deltaTime;
-            if (positionLockTimer <= 0)
-            {
-                positionLocked = false;
-            }
-        }
 
         if (hp <= 0)
         {
@@ -59,25 +45,20 @@ public class Killable : Character
         }
     }
 
-    void Die()
+    public void Die()
     {
+        GetComponent<StateMachine>().enabled = false;
+        GetComponent<ScriptMachine>().enabled = false;
         rb.constraints = ~RigidbodyConstraints.FreezeAll;
         player.GetEXP(expDrop);
 
         physicalCollider.enabled = false;
-        GetComponent<StateMachine>().enabled = false;
         Destroy(this);
     }
 
     new void Attack()
     {
         player.PlayerTakeDamage(atk);
-        onAttackCD = true;
-    }
-    
-    public void EndAttack()
-    {
-        onAttackCD = false;
     }
 
     void DropItems()
@@ -100,11 +81,6 @@ public class Killable : Character
     public string GetDescription()
     {
         return description;
-    }
-
-    public bool GetAttackStatus()
-    {
-        return onAttackCD;
     }
 
     public GameObject GetTarget()

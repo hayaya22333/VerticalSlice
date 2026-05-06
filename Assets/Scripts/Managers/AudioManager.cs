@@ -9,6 +9,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioSource levelUp;
     [SerializeField] List<AudioSource> kills;
     [SerializeField] AudioSource hurt;
+    [SerializeField] AudioSource reload;
+
 
     void Start()
     {
@@ -17,6 +19,7 @@ public class AudioManager : MonoBehaviour
         player.KilledEnemy += HandleKill;
         player.LevelUp += HandleLevelUp;
         player.PlayerTookDamage += HandlePlayerDamage;
+        player.PlayerReload += HandlePlayerReload;
     }
 
     void HandleShoot()
@@ -41,6 +44,11 @@ public class AudioManager : MonoBehaviour
     void HandlePlayerDamage(int dmg)
     {
         hurt.Play();
+    }
+
+    void HandlePlayerReload()
+    {
+        reload.Play();
     }
 
 }
