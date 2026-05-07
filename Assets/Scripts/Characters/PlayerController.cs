@@ -31,6 +31,7 @@ public class PlayerController : Character
     [Header("Player Status")]
     public float attackCD;
     public int loadedAmmo = 5;
+    private bool canTalk = false;
 
     // Events
     public delegate void EmptyDelegate();
@@ -39,6 +40,8 @@ public class PlayerController : Character
     public event EmptyDelegate Shoot;
     public event EmptyDelegate KilledPlayer;
     public event EmptyDelegate PlayerReload;
+    public event EmptyDelegate RunDialogue;
+
     public event IntDelegate KilledEnemy;
     public event IntDelegate LevelUp;
     public event IntDelegate PlayerTookDamage;
@@ -91,9 +94,15 @@ public class PlayerController : Character
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            if (reloadTimer > 0 || loadedAmmo >= maxAmmo) return;
+            if (reloadTimer > 0 || loadedAmmo >= maxAmmo || ammo <= 0) return;
             StartReload();
             PlayerReload.Invoke();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (!canTalk) return;
+            RunDialogue.Invoke();
         }
 
         // Status check
@@ -255,4 +264,12 @@ public class PlayerController : Character
 */
     #endregion
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("NPC"))
+        {
+            Debug.Log("Hi");
+            canTalk = true;
+        }
+    }
 }
