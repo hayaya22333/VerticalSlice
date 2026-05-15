@@ -27,6 +27,7 @@ public class Killable : Character
         target = player.gameObject;
     }
 
+
     void Update()
     {
 
@@ -41,6 +42,7 @@ public class Killable : Character
         // Turn into state machine
         if (state == CharState.Chase)
         {
+            if (player.hp <= 0) return;
             Follow(target);
         }
     }
@@ -58,6 +60,7 @@ public class Killable : Character
 
     new void Attack()
     {
+        if (player.hp <= 0) return;
         player.PlayerTakeDamage(atk);
     }
 

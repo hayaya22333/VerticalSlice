@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bb1f8b161050514b8c3a5c72f8dde76, type: 3}
+  m_Name: Shop
+  m_EditorClassIdentifier: 
+  items:
+  - name: 'DOOM                                    '
+    price: 0
+    stock: 1
+  - name: Yellow Pill (Spam SPACE!)
+    price: 50
+    stock: 1
+  - name: Red Pill (Buffs attack damage)
+    price: 100
+    stock: 1
+  - name: 'Ammo (x3)                                 '
+    price: 50
+    stock: 2

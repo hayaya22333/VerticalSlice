@@ -10,6 +10,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] List<AudioSource> kills;
     [SerializeField] AudioSource hurt;
     [SerializeField] AudioSource reload;
+    [SerializeField] AudioSource womp;
+    [SerializeField] AudioSource coin;
 
 
     void Start()
@@ -20,6 +22,8 @@ public class AudioManager : MonoBehaviour
         player.LevelUp += HandleLevelUp;
         player.PlayerTookDamage += HandlePlayerDamage;
         player.PlayerReload += HandlePlayerReload;
+        player.KilledPlayer += HandlePlayerDeath;
+        player.SpentMoney += HandleSpentMoney;
     }
 
     void HandleShoot()
@@ -51,4 +55,13 @@ public class AudioManager : MonoBehaviour
         reload.Play();
     }
 
+    void HandlePlayerDeath()
+    {
+        womp.Play();
+    }
+
+    void HandleSpentMoney(int _price)
+    {
+        coin.Play();
+    }
 }
