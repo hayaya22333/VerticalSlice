@@ -31,6 +31,8 @@ The break down was very helpful, because it was detailed enough to the point whe
 I'm calling the Attack C# method from the script Killable.cs through the EnemyBehavior graph. I used this graph to calculate cool down for enemy attack interval, and used a timer node as countdown from "when enemy got close enough to player for attack" to "when the Attack C# method is called". The DistanceToTarget C# function is recycled from the last state machine, which calculates the distance between the two to only initiate attack if the distance is less than 3, and only deal damage to player if after 0.5 seconds, the distance between is less than 2.
 ### 4
 I used scriptable object for dialogue branching. The code for scriptable object is Asset/Scripts/Dialogue/DialogueNode.cs, and the actual scriptable object is Asset/Scripta/Dialogue/Merchant.asset. I'm attaching the NPC script in Asset/Scripts/Dialogue/NPC.cs on merchant NPC gameObject to pass this scriptable object to PlayerController.cs on player game object when player presses E to talk, which is further passed to the UI manager to be interpreted with HandleDialogue(NPC _npc) and other related functions under the Dialogue region of UIManager.cs. Ultimately, this lets me load to the next block of dialogue based on the index given by each choice, and when the line is the keywords END or SHOP, the LoadLine function in UIManager.cs will call EndTalk function from PlayerController to close the dialogueUI, or open the shop UI.
+
+
 ## Milestone 3 Devlog
 Milestone 3 Devlog goes here.
 ## Milestone 4 Devlog
