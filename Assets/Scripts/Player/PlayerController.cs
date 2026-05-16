@@ -48,7 +48,7 @@ public class PlayerController : Character
     public int wallet = 200;
 
     private NPC availableNPC;
-    private List<Item> availableItems = new List<Item>();
+    public List<Item> availableItems = new List<Item>();
 
 
 
@@ -135,10 +135,10 @@ public class PlayerController : Character
 
             if (Input.GetKeyDown(KeyCode.F))
             {
-                if (availableItems.Count == 0) return;
+                if (availableItems.Count <= 0) return;
 
-                Item _target = availableItems[availableItems.Count - 1];
-                GetItem.Invoke(availableItems[availableItems.Count - 1]);
+                Item _target = availableItems[0];
+                GetItem.Invoke(_target);
                 availableItems.Remove(_target);
                 Destroy(_target.gameObject);
             }
@@ -199,11 +199,6 @@ public class PlayerController : Character
     {
         rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y + jumpForce, rb.velocity.z);
     }
-
-    void Crouch()
-    {
-    }
-
     #endregion
 
 
@@ -333,33 +328,28 @@ public class PlayerController : Character
 
 // Auto Detection *************************************************************************************************************
     #region Auto Detection
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("NPC"))
-        {
-            availableNPC = other.GetComponent<NPC>();
-            canTalk = true;
-            AllowTalk.Invoke();
-        }
 
-        if (other.CompareTag("Item"))
-        {
-            Debug.Log("Item detected");
-            availableItems.Add(other.GetComponent<Item>());
-        }
+    public void EnterNPC(Collider other)
+    {
+        availableNPC = other.GetComponent<NPC>();
+        canTalk = true;
+        AllowTalk.Invoke();
     }
 
-    private void OnTriggerExit(Collider other)
+    public void ExitNPC(Collider other)
     {
-        if (other.CompareTag("NPC"))
-        {
-            canTalk = false;
-            NoTalk.Invoke();
-        }
-        if (other.CompareTag("Item"))
-        {
-            availableItems.Remove(other.GetComponent<Item>());
-        }
+        canTalk = false;
+        NoTalk.Invoke();
+    }
+
+    public void EnterItem(Collider other)
+    {
+        availableItems.Add(other.GetComponent<Item>());
+    }
+
+    public void ExitItem(Collider other)
+    {
+        availableItems.Remove(other.GetComponent<Item>());
     }
     #endregion
 }

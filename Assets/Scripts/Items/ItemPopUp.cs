@@ -3,9 +3,8 @@ using UnityEngine;
 
 public class ItemPopUp : MonoBehaviour
 {
-    [SerializeField] float delay = 1f;
+    [SerializeField] float delay = 2f;
     [SerializeField] float fadeDuration = 0.5f;
-
     CanvasGroup canvasGroup;
     Coroutine fadeRoutine;
 
@@ -22,10 +21,18 @@ public class ItemPopUp : MonoBehaviour
         if (fadeRoutine != null)
             StopCoroutine(fadeRoutine);
 
-        canvasGroup.alpha = 1f;
+        canvasGroup.alpha = 0f;
         canvasGroup.blocksRaycasts = true;
 
         fadeRoutine = StartCoroutine(FadeOut());
+    }
+
+    void Update()
+    {
+        if (canvasGroup.alpha < 1)
+        {
+            canvasGroup.alpha += Time.deltaTime*5;
+        }
     }
 
     IEnumerator FadeOut()

@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject itemPopup;
     [SerializeField] TextMeshProUGUI itemName;
     [SerializeField] TextMeshProUGUI itemCount;
+    List<Item> displayItemQue = new List<Item>();
 
 
     [Header("Death")]
@@ -98,6 +99,11 @@ public class UIManager : MonoBehaviour
             }
         }
 
+        if (displayItemQue.Count != 0)
+        {
+            TryDisplayGetItem();
+        }
+
         // Dialogue *************************************************************************
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -146,9 +152,18 @@ public class UIManager : MonoBehaviour
 
     void HandleGetItem(Item _item)
     {
+        displayItemQue.Add(_item);
+    }
+
+    void TryDisplayGetItem()
+    {
+        if (itemPopup.activeSelf) return;
+
         itemPopup.SetActive(true);
+        Item _item = displayItemQue[0];
         itemName.text = _item.displayName.ToString();
         itemCount.text = "(" + _item.count + ")";
+        displayItemQue.Remove(_item);
     }
     #endregion
 
