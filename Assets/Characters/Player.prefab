@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8625692509681178241}
   - component: {fileID: 3643951538210692371}
   - component: {fileID: 5323255339126596618}
-  - component: {fileID: 5525747025335916775}
+  - component: {fileID: 3920926494898517137}
   - component: {fileID: 6556218696703399562}
   - component: {fileID: 5774066101367022210}
   - component: {fileID: 2136125618761890761}
@@ -88,8 +88,8 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &5525747025335916775
-SphereCollider:
+--- !u!136 &3920926494898517137
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -103,12 +103,14 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 1.16
-  m_Center: {x: 0, y: 0, z: 0}
+  serializedVersion: 2
+  m_Radius: 0.84
+  m_Height: 2.3658917
+  m_Direction: 1
+  m_Center: {x: 2.0129884e-11, y: 0.50428367, z: -5.553416e-12}
 --- !u!135 &6556218696703399562
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -129,7 +131,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Radius: 0.97
-  m_Center: {x: 0, y: 0, z: 0.64}
+  m_Center: {x: 0, y: 0.86, z: 0.74}
 --- !u!114 &5774066101367022210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,7 +146,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 3643951538210692371}
   physicalCollider: {fileID: 5323255339126596618}
-  triggerCollider: {fileID: 5525747025335916775}
+  triggerCollider: {fileID: 3920926494898517137}
   hitBox: {fileID: 6556218696703399562}
   dialogues: []
   hp: 100
@@ -205,7 +207,7 @@ Transform:
   m_GameObject: {fileID: 2446039210339840458}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.543, z: -0}
+  m_LocalPosition: {x: -0, y: 0.874, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -272,7 +274,6 @@ GameObject:
   - component: {fileID: 8439063714064417146}
   - component: {fileID: 3992382922912072263}
   - component: {fileID: 4511311021198396096}
-  - component: {fileID: 4675809280803274021}
   m_Layer: 0
   m_Name: gun
   m_TagString: Untagged
@@ -289,7 +290,7 @@ Transform:
   m_GameObject: {fileID: 4588365190417963660}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.433, y: 0.432, z: 0.898}
+  m_LocalPosition: {x: 0.433, y: 0.763, z: 0.898}
   m_LocalScale: {x: 0.2094, y: 0.1489, z: 1.0249414}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -345,27 +346,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4675809280803274021
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4588365190417963660}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: -0.0000009536743}
 --- !u!1 &5304707485995642794
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,7 +374,7 @@ Transform:
   m_GameObject: {fileID: 5304707485995642794}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.653, z: 0}
+  m_LocalPosition: {x: -0, y: 0.984, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

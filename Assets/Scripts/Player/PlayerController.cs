@@ -22,6 +22,10 @@ public class PlayerController : Character
     [SerializeField] private float mouseSensitivity = 1f;
     [SerializeField] private float jumpForce = 4f;
     [SerializeField] private Transform cameraTransform;
+    private Camera playerCam;
+    private float xRotation = 0f;
+    private float yRotation = 0f;
+    public Inventory playerInventory;
 
     public override string description => "The lonely player";
 
@@ -44,10 +48,7 @@ public class PlayerController : Character
     public int wallet = 200;
 
     private NPC availableNPC;
-
-    private Camera playerCam;
-    private float xRotation = 0f;
-    private float yRotation = 0f;
+    private List<Item> availableItems = new List<Item>();
 
 
 
@@ -69,6 +70,7 @@ public class PlayerController : Character
     public event IntDelegate PlayerTookDamage;
 
     public event Action<NPC> RunDialogue;
+    public event Action<Item> GetItem;
     #endregion
 
 
@@ -129,6 +131,16 @@ public class PlayerController : Character
                 playerState = PlayerState.Talking;
                 RunDialogue.Invoke(availableNPC);
                 availableNPC.Talked();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                if (availableItems.Count == 0) return;
+
+                Item _target = availableItems[availableItems.Count - 1];
+                GetItem.Invoke(availableItems[availableItems.Count - 1]);
+                availableItems.Remove(_target);
+                Destroy(_target.gameObject);
             }
         }
 
@@ -277,9 +289,10 @@ public class PlayerController : Character
     {
         Ray atkRay = new Ray(playerCam.transform.position, playerCam.transform.forward);
         Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * 20f, Color.red);
+
         RaycastHit hit;
 
-        if (Physics.Raycast(atkRay, out hit))
+        if (Physics.Raycast(atkRay, out hit, 20f, ~0, QueryTriggerInteraction.Ignore))
         {
             if (hit.collider.TryGetComponent<IInteractable>(out var target))
             {
@@ -328,6 +341,12 @@ public class PlayerController : Character
             canTalk = true;
             AllowTalk.Invoke();
         }
+
+        if (other.CompareTag("Item"))
+        {
+            Debug.Log("Item detected");
+            availableItems.Add(other.GetComponent<Item>());
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -336,6 +355,10 @@ public class PlayerController : Character
         {
             canTalk = false;
             NoTalk.Invoke();
+        }
+        if (other.CompareTag("Item"))
+        {
+            availableItems.Remove(other.GetComponent<Item>());
         }
     }
     #endregion

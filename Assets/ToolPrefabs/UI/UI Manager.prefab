@@ -44,5 +44,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bc7f130ea42f084898ff8478d089646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelTextObject: {fileID: 0}
-  lvlUpTextObject: {fileID: 2666740583232320860, guid: 6e28fdc01d766c54b931d8eb354b2bd9, type: 3}
+  player: {fileID: 0}
+  levelText: {fileID: 0}
+  expProgressionText: {fileID: 0}
+  lvlUpTextObject: {fileID: 2666740583232320860, guid: 6e28fdc01d766c54b931d8eb354b2bd9,
+    type: 3}
+  hpText: {fileID: 0}
+  ammoText: {fileID: 0}
+  loadedAmmoText: {fileID: 0}
+  woundOverlay: {fileID: 0}
+  talkHint: {fileID: 0}
+  ItemsUI: {fileID: 0}
+  ItemPrefab: {fileID: 0}
+  deathUI: {fileID: 0}
+  dialogueUI: {fileID: 0}
+  dialogueText: {fileID: 0}
+  choiceButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  shopData: {fileID: 11400000, guid: b28dca2377b449c4eaf055670165da66, type: 2}
+  moneyText: {fileID: 0}
+  shopUI: {fileID: 0}
+  shopButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  shopItems: []

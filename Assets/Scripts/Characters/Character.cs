@@ -46,11 +46,16 @@ public class Character : MonoBehaviour
         }
 
         Vector3 target_pos = target.transform.position;
+
+        // ignore vertical difference
+        target_pos.y = transform.position.y;
+
         transform.LookAt(target_pos);
+
         transform.position = Vector3.MoveTowards(
             transform.position,
-            target_pos,
+            target.transform.position,
             speed * Time.deltaTime
-            );
+        );
     }
 }

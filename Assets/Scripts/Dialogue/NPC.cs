@@ -7,6 +7,8 @@ public class NPC : MonoBehaviour
     public DialogueData dialogueData;
     public int dialogueState = 0;
 
+    [SerializeField] GameObject talkHint;
+
     public void Talked()
     {
         if (dialogueState == 0)
@@ -18,5 +20,17 @@ public class NPC : MonoBehaviour
     public void SetDialogueState(int x)
     {
         dialogueState = x;
+    }
+
+    void Update()
+    {
+        if (dialogueState == 0)
+        {
+            talkHint.SetActive(true);
+        }
+        else
+        {
+            talkHint.SetActive(false);
+        }
     }
 }

@@ -22,6 +22,10 @@ public class UIManager : MonoBehaviour
 
     [Header("Temporary")]
     [SerializeField] GameObject talkHint;
+    [SerializeField] GameObject itemPopup;
+    [SerializeField] TextMeshProUGUI itemName;
+    [SerializeField] TextMeshProUGUI itemCount;
+
 
     [Header("Death")]
     [SerializeField] GameObject deathUI;
@@ -73,6 +77,9 @@ public class UIManager : MonoBehaviour
         player.RunDialogue += HandleRunDialogue;
         player.AllowTalk += HandleAllowTalk;
         player.NoTalk += HandleNoTalk;
+
+        // Item
+        player.GetItem += HandleGetItem;
     }
 
     void Update()
@@ -135,6 +142,13 @@ public class UIManager : MonoBehaviour
     void HandleNoTalk()
     {
         talkHint.SetActive(false);
+    }
+
+    void HandleGetItem(Item _item)
+    {
+        itemPopup.SetActive(true);
+        itemName.text = _item.displayName.ToString();
+        itemCount.text = "(" + _item.count + ")";
     }
     #endregion
 
@@ -272,4 +286,5 @@ public class UIManager : MonoBehaviour
         moneyText.text = "$" + player.wallet;
     }
     #endregion
+
 }

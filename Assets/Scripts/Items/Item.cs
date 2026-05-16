@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class Item : MonoBehaviour, IInteractable
 {
-    [SerializeField] public virtual string description => "This is a sample item.";
-    private float durability = 100f;
+    [SerializeField] public virtual string description => "This was in a pair";
+    public float durability = 100f;
+    public string displayName = "ball";
+    public int count;
+    public int price;
+    
 
     public void Interact()
     {
