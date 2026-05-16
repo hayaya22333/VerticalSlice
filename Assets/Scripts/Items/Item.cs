@@ -4,12 +4,23 @@ using UnityEngine;
 
 public class Item : MonoBehaviour, IInteractable
 {
+    public GameObject pickUpText;
     [SerializeField] public virtual string description => "This was in a pair";
     public float durability = 100f;
     public string displayName = "ball";
     public int count;
     public int price;
+    public float dropRate;
     
+    public void ShowText()
+    {
+        pickUpText.SetActive(true);
+    }
+
+    public void HideText()
+    {
+        pickUpText.SetActive(false);
+    }
 
     public void Interact()
     {

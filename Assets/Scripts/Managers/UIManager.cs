@@ -26,6 +26,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI itemName;
     [SerializeField] TextMeshProUGUI itemCount;
     List<Item> displayItemQue = new List<Item>();
+    [SerializeField] GameObject NoBullet;
+    [SerializeField] GameObject NoAmmo;
 
 
     [Header("Death")]
@@ -42,8 +44,11 @@ public class UIManager : MonoBehaviour
     [Header("Shop")]
     public ShopData shopData;
     public TextMeshProUGUI moneyText;
-    [SerializeField] GameObject shopUI;
+    public GameObject shopUI;
+    public GameObject buyUI;
+    public GameObject sellUI;
     public List<GameObject> shopButtons;
+    public List<GameObject> sellButtons;
     public List<ShopItem> shopItems = new List<ShopItem>();
 
 // Start/Update *************************************************************************************************************
@@ -73,6 +78,8 @@ public class UIManager : MonoBehaviour
         player.LevelUp += HandleLevelUp;
         player.KilledPlayer += HandlePlayerDeath;
         player.PlayerTookDamage += HandlePlayerDamage;
+        player.EmptyShot += HandleNoBullet;
+        player.NoAmmo += HandleNoAmmo;
 
         // NPC Interaction
         player.RunDialogue += HandleRunDialogue;
@@ -85,10 +92,8 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        expProgressionText.text = player.playerEXP + "/" + player.maxEXP;
-        hpText.text = "HP: " + player.hp;
-        loadedAmmoText.text = "ammo: " + player.loadedAmmo + "/" + player.maxAmmo;
-        ammoText.text = player.ammo.ToString();
+        ShowGenStats();
+        ShowAmmo();
 
         if (woundProgression > 0)
         {
@@ -112,6 +117,19 @@ public class UIManager : MonoBehaviour
         }
     }
     #endregion
+
+
+    void ShowAmmo()
+    {
+        loadedAmmoText.text = "ammo: " + player.loadedAmmo + "/" + player.maxAmmo;
+        ammoText.text = "mag: " + player.ammo;
+    }
+
+    void ShowGenStats()
+    {
+        expProgressionText.text = player.playerEXP + "/" + player.maxEXP;
+        hpText.text = "HP: " + player.hp;
+    }
 
 
 
@@ -164,6 +182,16 @@ public class UIManager : MonoBehaviour
         itemName.text = _item.displayName.ToString();
         itemCount.text = "(" + _item.count + ")";
         displayItemQue.Remove(_item);
+    }
+
+    void HandleNoBullet()
+    {
+        NoBullet.SetActive(true);
+    }
+
+    void HandleNoAmmo()
+    {
+        NoAmmo.SetActive(true);
     }
     #endregion
 
@@ -261,6 +289,31 @@ public class UIManager : MonoBehaviour
             shopButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = _itemText;
             i += 1;
         }
+
+        LoadSell();
+        SwitchBuy();
+    }
+
+    void LoadSell()
+    {
+        int i = 0;
+        foreach(InventoryItem item in player.playerInventory.inventory)
+        {
+            string _itemText = item.itemName + "\t$" + item.price + "\tholding: " + item.count;
+            sellButtons[i].SetActive(true);
+            sellButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = _itemText;
+            i += 1;
+        }
+
+        if (i == 1)
+        {
+            sellButtons[1].SetActive(false);
+        }
+        else if (i == 0)
+        {
+            sellButtons[1].SetActive(false);
+            sellButtons[0].SetActive(false);
+        }
     }
 
     public void CloseShop()
@@ -270,9 +323,45 @@ public class UIManager : MonoBehaviour
         shopUI.SetActive(false);
     }
 
+    public void SwitchBuy()
+    {
+        buyUI.SetActive(true);
+        sellUI.SetActive(false);
+    }
+
+    public void SwitchSell()
+    {
+        sellUI.SetActive(true);
+        buyUI.SetActive(false);
+    }
+
+    public void Sell(int i)
+    {
+        int _price = 50;
+
+        switch(i)
+        {
+            case 0:
+                if (player.playerInventory.inventory[0].count <= 0) return;
+                player.playerInventory.inventory[0].count -= 1;
+                _price = 50;
+                break;
+            case 1:
+                if (player.playerInventory.inventory[1].count <= 0) return;
+                player.playerInventory.inventory[1].count -= 1;
+                _price = 100;
+                break;
+        }
+        LoadSell();
+        _price *= -1;
+        player.Buy(_price);
+        moneyText.text = "$" + player.wallet;
+    }
+
+
     public void Buy(int i)
     {
-        if (shopItems[i].stock <= 0 || player.wallet <= 0) return;
+        if (shopItems[i].stock <= 0) return;
 
         switch(i)
         {
@@ -281,13 +370,16 @@ public class UIManager : MonoBehaviour
                 player.Die();
                 break;
             case 1:
+                if (player.wallet < 50) return;
                 // FIX THIS
                 player.flappy = true;
                 break;
             case 2:
+                if (player.wallet < 100) return;
                 player.atk *= 2;
                 break;
             case 3:
+                if (player.wallet < 50) return;
                 player.ammo += 3;
                 break;
             default:
@@ -295,7 +387,7 @@ public class UIManager : MonoBehaviour
         }
         shopItems[i].stock -= 1;
         ShopItem item = shopItems[i];
-        string _itemText = item.name + "\t$" + item.price + "\tstock: " + item.stock ;
+        string _itemText = item.name + "\t$" + item.price + "\tstock: " + item.stock;
         shopButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = _itemText;
         player.Buy(item.price);
         moneyText.text = "$" + player.wallet;

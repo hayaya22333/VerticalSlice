@@ -9,6 +9,7 @@ public class Killable : Character
     [SerializeField] public List<GameObject> itemDrops;
     [SerializeField] private int expDrop = 100;
     [SerializeField] private GameObject damagePopupPrefab;
+    [SerializeField] GameObject enemyMark;
 
     CharState state = CharState.Idle;
     GameObject target;
@@ -30,7 +31,6 @@ public class Killable : Character
 
     void Update()
     {
-
         if (hp <= 0)
         {
             // Implement drops
@@ -53,9 +53,24 @@ public class Killable : Character
         GetComponent<ScriptMachine>().enabled = false;
         rb.constraints = ~RigidbodyConstraints.FreezeAll;
         player.GetEXP(expDrop);
+        enemyMark.SetActive(false);
 
         physicalCollider.enabled = false;
+
+        Drop();
         Destroy(this);
+    }
+
+    void Drop()
+    {
+        foreach (GameObject drop in itemDrops)
+        {
+            double chance = Random.Range(0f, 1f);
+            if (chance <= drop.GetComponent<Item>().dropRate)
+            {
+                Instantiate(drop, transform.position, transform.rotation);
+            }
+        }
     }
 
     new void Attack()

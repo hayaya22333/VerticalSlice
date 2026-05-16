@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: Shop
   m_EditorClassIdentifier: 
   items:
-  - name: 'DOOOOOOOM                          '
+  - name: 'Deadly Posion                          '
     price: 0
     stock: 1
-  - name: Yellow Pill (Spam SPACE!)
+  - name: 'Flappy bird pill                        '
     price: 50
     stock: 1
-  - name: Red Pill (Buffs attack damage)
+  - name: 'Damage buff pill                    '
     price: 100
     stock: 1
   - name: 'Ammo (x3)                                 '
     price: 50
-    stock: 2
+    stock: 4

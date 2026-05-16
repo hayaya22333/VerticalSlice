@@ -58,6 +58,8 @@ public class PlayerController : Character
     public delegate void IntDelegate(int x);
 
     public event EmptyDelegate Shoot;
+    public event EmptyDelegate EmptyShot;
+    public event EmptyDelegate NoAmmo;
     public event EmptyDelegate KilledPlayer;
     public event EmptyDelegate PlayerReload;
 
@@ -108,8 +110,12 @@ public class PlayerController : Character
 
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                if (reloadTimer > 0) return;
-                if (attackCD > 0 || loadedAmmo <= 0) return;
+                if (reloadTimer > 0 || attackCD > 0) return;
+                if (loadedAmmo <= 0)
+                {
+                    EmptyShot.Invoke();
+                    return;
+                }
                 attackCD = 0.5f;
                 loadedAmmo -= 1;
 
@@ -120,7 +126,12 @@ public class PlayerController : Character
 
             if (Input.GetKeyDown(KeyCode.R))
             {
-                if (reloadTimer > 0 || loadedAmmo >= maxAmmo || ammo <= 0) return;
+                if (reloadTimer > 0 || loadedAmmo >= maxAmmo) return;
+                if (ammo <= 0)
+                {
+                    NoAmmo.Invoke();
+                    return;
+                }
                 StartReload();
                 PlayerReload.Invoke();
             }
@@ -250,7 +261,6 @@ public class PlayerController : Character
         wallet -= _price;
         SpentMoney.Invoke(_price);
     }
-
     #endregion
 
 
@@ -287,7 +297,7 @@ public class PlayerController : Character
 
         RaycastHit hit;
 
-        if (Physics.Raycast(atkRay, out hit, 20f, ~0, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(atkRay, out hit, 100f, ~0, QueryTriggerInteraction.Ignore))
         {
             if (hit.collider.TryGetComponent<IInteractable>(out var target))
             {
@@ -326,8 +336,8 @@ public class PlayerController : Character
 
 
 
-// Auto Detection *************************************************************************************************************
-    #region Auto Detection
+// Collision *************************************************************************************************************
+    #region Collision
 
     public void EnterNPC(Collider other)
     {
@@ -344,12 +354,16 @@ public class PlayerController : Character
 
     public void EnterItem(Collider other)
     {
-        availableItems.Add(other.GetComponent<Item>());
+        Item _item = other.GetComponent<Item>();
+        _item.ShowText();
+        availableItems.Add(_item);
     }
 
     public void ExitItem(Collider other)
     {
-        availableItems.Remove(other.GetComponent<Item>());
+        Item _item = other.GetComponent<Item>();
+        _item.HideText();
+        availableItems.Remove(_item);
     }
     #endregion
 }
