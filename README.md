@@ -7,17 +7,20 @@
 
 ## Milestone 2 Devlog
 ### 1
+
 Step 1: Build dialogue system that can open shop UI
 1. Write a scriptable object node that stores dialogue for an NPC
 2. Write a dialogue interpretation script that displays the lines and choices
 3. Build a single scriptable object from the node for merchant NPC
 4. Edit the interpreter to let it open shop or end dialogue when detecting keywords
 5. build a empty shop UI that lets you close it
+
 Step 2: Build a Inventory system that stores items and money
 1. Create an inventory script that stores a list of inventory and int for money
 2. each item in list stores item name, price, and count.
 3. Create game object prefabs of class Item, which allows player to pick up and store into inventory list.
 4. Edit enemy script to instantiate these items based on drop rate of each
+
 Step 3: Build a shop system that lets you buy/sell items with UI buttons
 1. write a scriptable object that stores shop item data
 2. write functions for buy and sell button to switch tabs
