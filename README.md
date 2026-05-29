@@ -50,7 +50,7 @@ I used scriptable object for dialogue branching. The code for scriptable object 
 
 2. I received feedback saying that the enemy would still attack when you talk to the NPC. This was intentional. To make this more clear, I added a new section of code in the UI manager and player script to force quit the dialogue after the player recieved damage.
 
-3. I added a new NPC who gives out quest to the player. It activates different dialogues based on whether the player has killed an enemy. To aid this new feather, I reworked the terrain to divide the game into two areas: a small area with a single enemy to kill for NPC quest and a bigger area behind the mountain with more enemies for the player to explore different item effects from the merchant NPC's shop.
+3. I added a new NPC who gives out quest to the player. It activates different dialogues based on whether the player has killed an enemy. To aid this new feature, I reworked the terrain to divide the game into two areas: a small area with a single enemy to kill for NPC quest and a bigger area behind the mountain with more enemies for the player to explore different item effects from the merchant NPC's shop.
 
 ## Milestone 4 Devlog
 Milestone 4 Devlog goes here.
