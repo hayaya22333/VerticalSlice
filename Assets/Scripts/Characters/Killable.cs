@@ -87,12 +87,12 @@ public class Killable : Character
         }
     }
 
-    public void HandleDamage(int dmg, string dmgSource, string damagedPart)
+    public void HandleDamage(int dmg, string dmgSource, string damagedPart, RaycastHit hit)
     {
         hp -= dmg;
         CustomEvent.Trigger(gameObject, "StartChase");
         
-        DamagePopUp popUp = Instantiate(damagePopupPrefab, transform.position, transform.rotation).GetComponent<DamagePopUp>();
+        DamagePopUp popUp = Instantiate(damagePopupPrefab, hit.point, transform.rotation).GetComponent<DamagePopUp>();
         popUp.PopNum(dmg);
     }
 

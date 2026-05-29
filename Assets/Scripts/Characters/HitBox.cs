@@ -6,7 +6,7 @@ public class HitBox : MonoBehaviour, IInteractable
 {
     [SerializeField] public Killable parentScript;
 
-    public void TakeDamage(int dmg, string source)
+    public void TakeDamage(int dmg, string source, RaycastHit hit)
     {
         if (parentScript == null) return;
 
@@ -19,7 +19,7 @@ public class HitBox : MonoBehaviour, IInteractable
             dmg /= 2;
         }
 
-        parentScript.HandleDamage(dmg, source, gameObject.name);
+        parentScript.HandleDamage(dmg, source, gameObject.name, hit);
 
         if (parentScript == null)
         {

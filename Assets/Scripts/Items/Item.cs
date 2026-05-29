@@ -28,7 +28,7 @@ public class Item : MonoBehaviour, IInteractable
         Destroy(gameObject);
     }
 
-    public void TakeDamage(int dmg, string source)
+    public void TakeDamage(int dmg, string source, RaycastHit hit)
     {
         durability -= dmg;
         Debug.Log(gameObject.name + "'s durability reduced.");

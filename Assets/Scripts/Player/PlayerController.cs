@@ -311,7 +311,7 @@ public class PlayerController : Character
         {
             if (hit.collider.TryGetComponent<IInteractable>(out var target))
             {
-                target.TakeDamage(atk, gameObject.name);
+                target.TakeDamage(atk, gameObject.name, hit);
             }
         }
     }

@@ -5,5 +5,5 @@ using UnityEngine;
 public interface IInteractable
 {
     // void Interact();
-    void TakeDamage(int dmg, string dmgSource);
+    void TakeDamage(int dmg, string dmgSource, RaycastHit hit);
 }

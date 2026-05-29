@@ -163,7 +163,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: cdaf3b3fb1755c64c902baad77472091, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -221,7 +221,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dialogueData: {fileID: 11400000, guid: cb5ad77d0d08e0c469ed31cbc2351357, type: 2}
+  otherDialogue: {fileID: 0}
   dialogueState: 0
+  _name: 
   talkHint: {fileID: 1775746711069085487}
 --- !u!136 &934482455979344308
 CapsuleCollider:
