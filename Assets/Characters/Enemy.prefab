@@ -395,8 +395,8 @@ MonoBehaviour:
   speed: 2
   positionLocked: 0
   itemDrops:
-  - {fileID: 2402803051684719113, guid: 15159834b73b05447813adceefe1d5cc, type: 3}
-  - {fileID: 2402803051684719113, guid: f510204eb8499504b93e2f0d8bca8ae4, type: 3}
+  - {fileID: 4101301519502256210, guid: 66b6a501db0ccff448e7d6d619947972, type: 3}
+  - {fileID: 662297541173863033, guid: de147502146c52b40bd287dae6b0cf64, type: 3}
   expDrop: 100
   damagePopupPrefab: {fileID: 454803331070060558, guid: 0182ffc52d7f43d4c85cfb76b2660d7f,
     type: 3}

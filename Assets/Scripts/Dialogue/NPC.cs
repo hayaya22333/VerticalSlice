@@ -5,7 +5,9 @@ using UnityEngine;
 public class NPC : MonoBehaviour
 {
     public DialogueData dialogueData;
+    public DialogueData otherDialogue;
     public int dialogueState = 0;
+    public string _name;
 
     [SerializeField] GameObject talkHint;
 
@@ -32,5 +34,11 @@ public class NPC : MonoBehaviour
         {
             talkHint.SetActive(false);
         }
+    }
+
+    public void ClearQuest()
+    {
+        dialogueData = otherDialogue;
+        dialogueState = 0;
     }
 }

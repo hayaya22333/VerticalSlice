@@ -85,6 +85,7 @@ public class UIManager : MonoBehaviour
         player.RunDialogue += HandleRunDialogue;
         player.AllowTalk += HandleAllowTalk;
         player.NoTalk += HandleNoTalk;
+        player.CloseDialogue += CloseDialogue;
 
         // Item
         player.GetItem += HandleGetItem;
@@ -121,14 +122,21 @@ public class UIManager : MonoBehaviour
 
     void ShowAmmo()
     {
-        loadedAmmoText.text = "ammo: " + player.loadedAmmo + "/" + player.maxAmmo;
-        ammoText.text = "mag: " + player.ammo;
+        loadedAmmoText.text = player.loadedAmmo + "/" + player.maxAmmo;
+        ammoText.text = player.ammo.ToString();
     }
 
     void ShowGenStats()
     {
-        expProgressionText.text = player.playerEXP + "/" + player.maxEXP;
-        hpText.text = "HP: " + player.hp;
+        expProgressionText.text = "EXP: " + player.playerEXP + "/" + player.maxEXP;
+        if (player.hp > 0)
+        {
+            hpText.text = "HP: " + player.hp;
+        }
+        else
+        {
+            hpText.text = "HP: 0";
+        }
     }
 
 
@@ -209,6 +217,15 @@ public class UIManager : MonoBehaviour
 
         TryNextLine();
         dialogueUI.SetActive(true);
+        talkHint.SetActive(false);
+    }
+
+    void CloseDialogue()
+    {
+        player.EndTalk();
+        dialogueUI.SetActive(false);
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        talkHint.SetActive(true);
     }
 
     void TryNextLine()
@@ -241,9 +258,7 @@ public class UIManager : MonoBehaviour
         switch (activeDialogue.npcLines[_index])
         {
             case "[END]":
-                player.EndTalk();
-                dialogueUI.SetActive(false);
-                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+                CloseDialogue();
                 break;
             case "[SHOP]":
                 dialogueUI.SetActive(false);

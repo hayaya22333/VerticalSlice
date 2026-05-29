@@ -65,13 +65,14 @@ public class PlayerController : Character
 
     public event EmptyDelegate AllowTalk;
     public event EmptyDelegate NoTalk;
+    public event Action<NPC> RunDialogue;
+    public event EmptyDelegate CloseDialogue;
 
     public event IntDelegate SpentMoney;
     public event IntDelegate KilledEnemy;
     public event IntDelegate LevelUp;
     public event IntDelegate PlayerTookDamage;
 
-    public event Action<NPC> RunDialogue;
     public event Action<Item> GetItem;
     #endregion
 
@@ -139,6 +140,14 @@ public class PlayerController : Character
             if (Input.GetKeyDown(KeyCode.E))
             {
                 if (!canTalk) return;
+
+                if (availableNPC._name == "Quest Giver")
+                {
+                    if (killCount > 0)
+                    {
+                        availableNPC.ClearQuest();
+                    }
+                }
                 playerState = PlayerState.Talking;
                 RunDialogue.Invoke(availableNPC);
                 availableNPC.Talked();
@@ -237,6 +246,7 @@ public class PlayerController : Character
         hp -= dmg;
         Debug.Log("Player took " + dmg + "damage!!");
         PlayerTookDamage.Invoke(dmg);
+        CloseDialogue.Invoke();
 
         if (hp <= 0)
         {
