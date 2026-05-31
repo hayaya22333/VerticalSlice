@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] PlayerController player;
 
     [Header("General")]
+    [SerializeField] GameObject generalUI;
     [SerializeField] TextMeshProUGUI levelText;
     [SerializeField] TextMeshProUGUI expProgressionText;
     [SerializeField] GameObject lvlUpTextObject;
@@ -19,6 +20,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI ammoText;
     [SerializeField] TextMeshProUGUI loadedAmmoText;
     [SerializeField] GameObject woundOverlay;
+    [SerializeField] GameObject endUI;
 
     [Header("Temporary")]
     [SerializeField] GameObject talkHint;
@@ -33,7 +35,7 @@ public class UIManager : MonoBehaviour
     [Header("Death")]
     [SerializeField] GameObject deathUI;
 
-    [Header("Dialoge")]
+    [Header("Dialogue")]
     [SerializeField] GameObject dialogueUI;
     [SerializeField] TextMeshProUGUI dialogueText;
     [SerializeField] List<GameObject> choiceButtons;
@@ -80,6 +82,7 @@ public class UIManager : MonoBehaviour
         player.PlayerTookDamage += HandlePlayerDamage;
         player.EmptyShot += HandleNoBullet;
         player.NoAmmo += HandleNoAmmo;
+        player.EndGame += HandleGameEnd;
 
         // NPC Interaction
         player.RunDialogue += HandleRunDialogue;
@@ -159,6 +162,14 @@ public class UIManager : MonoBehaviour
     void HandlePlayerDeath()
     {
         deathUI.SetActive(true);
+    }
+
+    void HandleGameEnd()
+    {
+        endUI.SetActive(true);
+        generalUI.SetActive(false);
+        talkHint.SetActive(false);
+        Time.timeScale = 0f;
     }
     #endregion
 
@@ -263,6 +274,10 @@ public class UIManager : MonoBehaviour
             case "[SHOP]":
                 dialogueUI.SetActive(false);
                 OpenShop();
+                break;
+            case "[END GAME]":
+                CloseDialogue();
+                player.End();
                 break;
             default:
                 dialogueText.text = activeDialogue.npcLines[_index];

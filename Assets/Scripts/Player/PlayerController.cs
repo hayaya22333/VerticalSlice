@@ -50,6 +50,8 @@ public class PlayerController : Character
     private NPC availableNPC;
     public List<Item> availableItems = new List<Item>();
 
+    bool gameEnd = false;
+
 
 
 // Events *********************************************************************************************************************
@@ -74,6 +76,9 @@ public class PlayerController : Character
     public event IntDelegate PlayerTookDamage;
 
     public event Action<Item> GetItem;
+    public event IntDelegate CheckQuest;
+
+    public event EmptyDelegate EndGame;
     #endregion
 
 
@@ -97,6 +102,7 @@ public class PlayerController : Character
 
     void Update()
     {
+        if (gameEnd) return;
     // [WASD movements] + [Rotation]**********************************************
         if (playerState != PlayerState.Talking)
         {
@@ -140,14 +146,6 @@ public class PlayerController : Character
             if (Input.GetKeyDown(KeyCode.E))
             {
                 if (!canTalk) return;
-
-                if (availableNPC._name == "Quest Giver")
-                {
-                    if (killCount > 0)
-                    {
-                        availableNPC.ClearQuest();
-                    }
-                }
                 playerState = PlayerState.Talking;
                 RunDialogue.Invoke(availableNPC);
                 availableNPC.Talked();
@@ -233,6 +231,7 @@ public class PlayerController : Character
 
         killCount += 1;
         KilledEnemy.Invoke(killCount);
+        CheckQuest.Invoke(killCount);
     }
     
     public void HandleLevelUp(int lvl)
@@ -376,4 +375,10 @@ public class PlayerController : Character
         availableItems.Remove(_item);
     }
     #endregion
+
+    public void End()
+    {
+        gameEnd = true;
+        EndGame.Invoke();
+    }
 }

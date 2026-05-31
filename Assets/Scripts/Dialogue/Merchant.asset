@@ -24,8 +24,8 @@ MonoBehaviour:
     choices:
     - choiceText: I'd like to buy.
       nextDialogueID: 2
-    - choiceText: Nevermind.
-      nextDialogueID: 3
+    - choiceText: I don't have money.
+      nextDialogueID: 7
   - npcLines:
     - Of course you do.
     - '[SHOP]'
@@ -49,5 +49,10 @@ MonoBehaviour:
     choices: []
   - npcLines:
     - You don't have many friends, do you.
+    - '[END]'
+    choices: []
+  - npcLines:
+    - These scarecrows will drop some mana-polluted parts.
+    - I'll pay a fair price if you can bring them to me.
     - '[END]'
     choices: []

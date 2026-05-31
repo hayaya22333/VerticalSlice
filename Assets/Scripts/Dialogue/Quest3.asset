@@ -10,27 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20c5b2c7536c2cc409890d1076ea1545, type: 3}
-  m_Name: Quest
+  m_Name: Quest3
   m_EditorClassIdentifier: 
   speaker: 
   dialogues:
   - npcLines:
-    - You see that scarecrow?
+    - Clean work.
+    - Let's go home!
     choices:
-    - choiceText: Yea
-      nextDialogueID: 2
+    - choiceText: :D
+      nextDialogueID: 1
   - npcLines:
-    - Speed up. Kill the scarecrow.
-    - '[END]'
-    choices: []
-  - npcLines:
-    - It's possessed by a stray soul.
-    - End it.
-    - Use your gun.
-    choices:
-    - choiceText: OK.
-      nextDialogueID: 3
-  - npcLines:
-    - Report back when you're done.
-    - '[END]'
+    - '[END GAME]'
     choices: []

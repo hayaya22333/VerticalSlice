@@ -15,15 +15,15 @@ MonoBehaviour:
   speaker: 
   dialogues:
   - npcLines:
-    - I'm impressed.
+    - Clean work.
     choices:
     - choiceText: :3
       nextDialogueID: 1
   - npcLines:
     - There are more of it behind the mountain.
-    - Get used to this.
+    - We can get out after taking care of all of them.
     choices:
-    - choiceText: Ok..
+    - choiceText: Got it.
       nextDialogueID: 2
   - npcLines:
     - '[END]'
