@@ -16,6 +16,8 @@ public class Killable : Character
     PlayerController player;
     private float positionLockTimer;
 
+    [SerializeField] private MaterialSwitcher meshMaterialSwitcher;
+
     void Awake()
     {
         hp = 200;
@@ -94,6 +96,7 @@ public class Killable : Character
         
         DamagePopUp popUp = Instantiate(damagePopupPrefab, hit.point, transform.rotation).GetComponent<DamagePopUp>();
         popUp.PopNum(dmg);
+        meshMaterialSwitcher.SwitchOn();
     }
 
     public string GetDescription()
