@@ -28,6 +28,7 @@ public class NPC : MonoBehaviour
     void Start()
     {
         Locator.Instance.Player.CheckQuest += HandleCheckQuest;
+        _name = gameObject.name;
     }
 
     void Update()
@@ -58,5 +59,46 @@ public class NPC : MonoBehaviour
             dialogueStage = 1;
             dialogueState = 0;
         }
+    }
+
+    // Dialogue behavior -------------------------------------------------------
+    [SerializeField] private float rotateSpeed = 360f;
+
+    private Coroutine lookAtPlayerCoroutine;
+
+    public void LookAtPlayerSmooth()
+    {
+        if (lookAtPlayerCoroutine != null)
+        {
+            StopCoroutine(lookAtPlayerCoroutine);
+        }
+
+        lookAtPlayerCoroutine = StartCoroutine(LookAtPlayerSmoothRoutine());
+    }
+
+    private IEnumerator LookAtPlayerSmoothRoutine()
+    {
+        Transform playerTransform = Locator.Instance.Player.transform;
+
+        Vector3 direction = playerTransform.position - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude < 0.001f)
+            yield break;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
+        {
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRotation,
+                rotateSpeed * Time.deltaTime
+            );
+
+            yield return null;
+        }
+
+        transform.rotation = targetRotation;
     }
 }

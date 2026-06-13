@@ -27,9 +27,12 @@ public class PlayerController : Character
     private float yRotation = 0f;
     public Inventory playerInventory;
 
+    public GameObject gunModel;
+    public GameObject canonModel;
+
     public override string description => "The lonely player";
 
-    public int maxEXP = 300;
+    public int maxEXP = 50;
     public int playerEXP = 0;
     public int killCount = 0;
     
@@ -46,6 +49,7 @@ public class PlayerController : Character
     private bool canTalk = false;
     public bool flappy = false;
     public int wallet = 200;
+    string currentWeapon = "gun";
 
     private NPC availableNPC;
     public List<Item> availableItems = new List<Item>();
@@ -64,11 +68,13 @@ public class PlayerController : Character
     public event EmptyDelegate NoAmmo;
     public event EmptyDelegate KilledPlayer;
     public event EmptyDelegate PlayerReload;
+    public event EmptyDelegate EndPlayerReload;
 
     public event EmptyDelegate AllowTalk;
     public event EmptyDelegate NoTalk;
     public event Action<NPC> RunDialogue;
     public event EmptyDelegate CloseDialogue;
+    public event EmptyDelegate NPCSpeak;
 
     public event IntDelegate SpentMoney;
     public event IntDelegate KilledEnemy;
@@ -89,7 +95,7 @@ public class PlayerController : Character
     void Awake()
     {
         lvl = 1;
-        atk = 70;
+        atk = 60;
 
         LevelUp += HandleLevelUp;
     }
@@ -98,6 +104,7 @@ public class PlayerController : Character
     {
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
         playerCam = GetComponentInChildren<Camera>();
+        gunOriginalLocalPos = gunModel.transform.localPosition;
     }
 
     void Update()
@@ -115,20 +122,25 @@ public class PlayerController : Character
                 Jump();
             }
 
+            // ATTACK
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 if (reloadTimer > 0 || attackCD > 0) return;
+
                 if (loadedAmmo <= 0)
                 {
                     EmptyShot.Invoke();
                     return;
                 }
+
                 attackCD = 0.5f;
                 loadedAmmo -= 1;
 
                 DrawATKRay();
                 Shoot.Invoke();
                 Attack();
+
+                Recoil();
             }
 
             if (Input.GetKeyDown(KeyCode.R))
@@ -146,6 +158,10 @@ public class PlayerController : Character
             if (Input.GetKeyDown(KeyCode.E))
             {
                 if (!canTalk) return;
+
+                StartCoroutine(LookAtNPCSmooth(availableNPC, 120f));
+                availableNPC.LookAtPlayerSmooth();
+                RunTalkSound();
                 playerState = PlayerState.Talking;
                 RunDialogue.Invoke(availableNPC);
                 availableNPC.Talked();
@@ -217,6 +233,20 @@ public class PlayerController : Character
     {
         rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y + jumpForce, rb.velocity.z);
     }
+
+    void GetGun()
+    {
+        canonModel.SetActive(false);
+        gunModel.SetActive(true);
+        currentWeapon = "gun";
+    }
+
+    void GetCanon()
+    {
+        gunModel.SetActive(false);
+        canonModel.SetActive(true);
+        currentWeapon = "canon";
+    }
     #endregion
 
 
@@ -237,6 +267,7 @@ public class PlayerController : Character
     public void HandleLevelUp(int lvl)
     {
         Debug.Log("Player reached lvl " + lvl);
+        maxEXP += 50;
     }
 
     public void PlayerTakeDamage(int dmg)
@@ -270,6 +301,43 @@ public class PlayerController : Character
         wallet -= _price;
         SpentMoney.Invoke(_price);
     }
+
+    public void RunTalkSound()
+    {
+        NPCSpeak.Invoke();
+    }
+
+    private IEnumerator LookAtNPCSmooth(NPC npc, float rotateSpeed)
+    {
+        Vector3 direction = npc.transform.position - transform.position;
+        direction.y = 0;
+
+        if (direction.sqrMagnitude < 0.001f)
+            yield break;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f)
+        {
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRotation,
+                rotateSpeed * Time.deltaTime);
+
+            yield return null;
+        }
+
+        transform.rotation = targetRotation;
+    }
+
+    public string currentQuest = "";
+    public int questReq = 0;
+
+    public void SetQuest(string _quest, int _req)
+    {
+        currentQuest = _quest;
+        questReq = _req;
+    }
     #endregion
 
 
@@ -286,6 +354,7 @@ public class PlayerController : Character
     {
         if (loadedAmmo == maxAmmo || ammo == 0) return;
         // Play animation, wait for end
+        EndPlayerReload.Invoke();
         int emptyAmmo = maxAmmo - loadedAmmo;
         if (ammo >= emptyAmmo)
         {
@@ -314,33 +383,62 @@ public class PlayerController : Character
             }
         }
     }
-/*
-    void DrawRay()
-    {
-        Ray playerRay = new Ray(playerCam.transform.position, playerCam.transform.forward);
-        Debug.DrawRay(playerCam.transform.position, playerCam.transform.forward * 20f, Color.red);
-        RaycastHit hit;
 
-        if (Physics.Raycast(playerRay, out hit))
+    [SerializeField] private float recoilDistance = 0.1f;
+    [SerializeField] private float recoilSpeed = 20f;
+
+    private Vector3 gunOriginalLocalPos;
+    private Coroutine recoilCoroutine;
+
+    private void Recoil()
+    {
+        if (recoilCoroutine != null)
         {
-            // Debug.Log("Hitting " + hit.collider.name);
-            GameObject hitObject = hit.collider.gameObject;
-            switch (hitObject.tag)
-            {
-                case "Item":
-                // UI allow pickup
-                    break;
-                case "Enemy":
-                // Add aggro
-                    break;
-            }
-            if (hit.collider.TryGetComponent<IInteractable>(out var target))
-            {
-                AllowInteract(target);
-            }
+            StopCoroutine(recoilCoroutine);
         }
+
+        recoilCoroutine = StartCoroutine(RecoilRoutine());
     }
-*/
+
+    private IEnumerator RecoilRoutine()
+    {
+        Vector3 recoilPos = gunOriginalLocalPos + Vector3.back * recoilDistance;
+
+        Quaternion originalRot = gunModel.transform.localRotation;
+        Quaternion recoilRot =
+            Quaternion.Euler(-8f, 0f, 0f) * originalRot;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * recoilSpeed;
+
+            gunModel.transform.localPosition =
+                Vector3.Lerp(gunOriginalLocalPos, recoilPos, t);
+
+            gunModel.transform.localRotation =
+                Quaternion.Lerp(originalRot, recoilRot, t);
+
+            yield return null;
+        }
+
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * recoilSpeed;
+
+            gunModel.transform.localPosition =
+                Vector3.Lerp(recoilPos, gunOriginalLocalPos, t);
+
+            gunModel.transform.localRotation =
+                Quaternion.Lerp(recoilRot, originalRot, t);
+
+            yield return null;
+        }
+
+        gunModel.transform.localPosition = gunOriginalLocalPos;
+        gunModel.transform.localRotation = originalRot;
+    }
     #endregion
 
 

@@ -204,10 +204,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2.05
-  m_Height: 2
+  m_Radius: 3.4
+  m_Height: 4.100001
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.00000023841858, z: 0}
 --- !u!114 &3755799958828304851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,11 +220,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a1313ef24fc5124bbdad8e5ca861f08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogueList: []
   dialogueData: {fileID: 11400000, guid: cb5ad77d0d08e0c469ed31cbc2351357, type: 2}
-  otherDialogue: {fileID: 0}
   dialogueState: 0
+  dialogueStage: 0
   _name: 
   talkHint: {fileID: 1775746711069085487}
+  rotateSpeed: 360
 --- !u!136 &934482455979344308
 CapsuleCollider:
   m_ObjectHideFlags: 0

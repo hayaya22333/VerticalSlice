@@ -24,6 +24,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Temporary")]
     [SerializeField] GameObject talkHint;
+    [SerializeField] GameObject reloadingHint;
     [SerializeField] GameObject itemPopup;
     [SerializeField] TextMeshProUGUI itemName;
     [SerializeField] TextMeshProUGUI itemCount;
@@ -52,6 +53,11 @@ public class UIManager : MonoBehaviour
     public List<GameObject> shopButtons;
     public List<GameObject> sellButtons;
     public List<ShopItem> shopItems = new List<ShopItem>();
+
+    [Header("Quest")]
+    public GameObject questUI;
+    public TextMeshProUGUI questText;
+    public TextMeshProUGUI questProgression;
 
 // Start/Update *************************************************************************************************************
     #region Start/Update
@@ -84,6 +90,9 @@ public class UIManager : MonoBehaviour
         player.NoAmmo += HandleNoAmmo;
         player.EndGame += HandleGameEnd;
 
+        player.PlayerReload += HandleReload;
+        player.EndPlayerReload += HandleEndReload;
+
         // NPC Interaction
         player.RunDialogue += HandleRunDialogue;
         player.AllowTalk += HandleAllowTalk;
@@ -114,14 +123,24 @@ public class UIManager : MonoBehaviour
         }
 
         // Dialogue *************************************************************************
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || (Input.GetKeyDown(KeyCode.Mouse0)))
         {
             if (player.playerState != PlayerState.Talking) return;
             TryNextLine();
         }
+
+        ShowQuest();
     }
     #endregion
 
+    void ShowQuest()
+    {
+        if (player.currentQuest == "") return;
+
+        questUI.SetActive(true);
+        questText.text = player.currentQuest;
+        questProgression.text = "(" + player.killCount + "/" + player.questReq + ")";
+    }
 
     void ShowAmmo()
     {
@@ -171,6 +190,16 @@ public class UIManager : MonoBehaviour
         talkHint.SetActive(false);
         Time.timeScale = 0f;
     }
+
+    void HandleReload()
+    {
+        reloadingHint.SetActive(true);
+    }
+
+    void HandleEndReload()
+    {
+        reloadingHint.SetActive(false);
+    }
     #endregion
 
 
@@ -218,6 +247,8 @@ public class UIManager : MonoBehaviour
 
 // Dialogue *****************************************************************************************************************
     #region Dialogue
+    private NPC npc;
+
     void HandleRunDialogue(NPC _npc)
     {
         UnityEngine.Cursor.lockState = CursorLockMode.None;
@@ -229,10 +260,22 @@ public class UIManager : MonoBehaviour
         TryNextLine();
         dialogueUI.SetActive(true);
         talkHint.SetActive(false);
+        npc = _npc;
     }
 
     void CloseDialogue()
     {
+        if (npc._name == "QuestGiver")
+        {
+            if (player.killCount == 0)
+            {
+                player.SetQuest("Kill the scarecrow", 1);
+            }
+            else if (player.killCount >= 1)
+            {
+                player.SetQuest("Kill all scarecrows", 5);
+            }
+        }
         player.EndTalk();
         dialogueUI.SetActive(false);
         UnityEngine.Cursor.lockState = CursorLockMode.Locked;
@@ -280,6 +323,7 @@ public class UIManager : MonoBehaviour
                 player.End();
                 break;
             default:
+                player.RunTalkSound();
                 dialogueText.text = activeDialogue.npcLines[_index];
                 break;
         }

@@ -7,7 +7,7 @@ public class Killable : Character
 {
     [Header("Enemy Properties")]
     [SerializeField] public List<GameObject> itemDrops;
-    [SerializeField] private int expDrop = 100;
+    [SerializeField] private int expDrop = 91;
     [SerializeField] private GameObject damagePopupPrefab;
     [SerializeField] GameObject enemyMark;
 
@@ -20,8 +20,8 @@ public class Killable : Character
 
     void Awake()
     {
-        hp = 200;
-        speed = 2f;
+        hp = 150;
+        speed = 3f;
     }
 
     void Start()

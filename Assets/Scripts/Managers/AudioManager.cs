@@ -13,6 +13,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioSource womp;
     [SerializeField] AudioSource coin;
     [SerializeField] AudioSource getItem;
+    [SerializeField] AudioSource npcTalk;
 
 
     void Start()
@@ -26,6 +27,8 @@ public class AudioManager : MonoBehaviour
         player.KilledPlayer += HandlePlayerDeath;
         player.SpentMoney += HandleSpentMoney;
         player.GetItem += HandleGetItem;
+
+        player.NPCSpeak += HandleNPCSpeak;
     }
 
     void HandleShoot()
@@ -70,5 +73,10 @@ public class AudioManager : MonoBehaviour
     void HandleGetItem(Item item)
     {
         getItem.Play();
+    }
+
+    void HandleNPCSpeak()
+    {
+        npcTalk.Play();
     }
 }
